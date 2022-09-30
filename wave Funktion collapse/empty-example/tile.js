@@ -1,10 +1,19 @@
-let pic;
-let colors; 
-function tile(pic,colors)
+class tile {
+constructor(pic,colors,rotation)
 {
 	this.pic = pic;
 	this.colors = colors;
+	this.rotation = rotation;
 }
-function getImg() {
-	return pic;
+getImg() {
+	return this.pic;
+	}
+getColor() {
+	return this.colors;
 }
+getRotation()
+{
+	return this.rotation;
+}
+}
+
