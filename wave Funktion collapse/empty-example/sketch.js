@@ -13,8 +13,8 @@ function preload()
 }
 
 function setup() {
-  frameRate(10);
-  createCanvas(400, 400);
+  frameRate(5);
+  createCanvas(600, 600);
   tileSize = 20 ; 
   playfield = new Array(width / tileSize) ;
   for (let i = 0; i < playfield.length; i ++) 
@@ -23,6 +23,7 @@ function setup() {
     } 
   tiles[0] = new tile(imiges[0],["aaa", "aaa" , "aaa" , "aaa"],0);
   tiles[1] = new tile(imiges[1],["bbb", "bbb" , "bbb" , "bbb"],0);
+  /*
   tiles[2] = new tile(imiges[2],["bbb", "bcb" , "bbb" , "bbb"],0);
   tiles[3] = new tile(imiges[3],["bbb", "bdb" , "bbb" , "bdb"],0)
   tiles[4] = new tile(imiges[4],["abb", "bcb" , "abb" , "aaa"],0)
@@ -34,7 +35,7 @@ function setup() {
   tiles[10] = new tile(imiges[10],["bcb", "bcb" , "bcb" , "bcb"],0)
   tiles[11] = new tile(imiges[11],["bcb", "bcb" , "bbb" , "bbb"],0)
   tiles[12] = new tile(imiges[12],["bbb", "bcb" , "bbb" , "bcb"],0)
-
+*/
 
 
   background(12);
@@ -57,12 +58,31 @@ function setup() {
 }
 
 function draw() {
+  if(field.length == 0) {noLoop();} 
+  else {  
+    if(field[0].getColl() == true) 
+    {
+      let temp = []
+      while(field[0].getColl() == true) {
+        temp.push(field[0]);
+        field.shift();
+      }    
+      for(let i = 0; i < temp.length; i++) 
+      {
+        let posX = temp[i].getCoord()[0];
+        let posY = temp[i].getCoord()[1];
+        updateBoard(posX,posY);
+        
+      }
 
-if( field.length >=1){  
-  let posX = field[0].getCoord()[0];
-  let posY = field[0].getCoord()[1];
-  field[0].collapse();
-  updateBoard(posX,posY);
+    } else {
+        let posX = field[0].getCoord()[0];
+        let posY = field[0].getCoord()[1];
+        field[0].collapse();
+        updateBoard(posX,posY);
+    }
+
+
 }
   for (let i = 0; i < width / tileSize; i ++) 
     {
@@ -75,36 +95,16 @@ if( field.length >=1){
         }
       }
     }
+    console.log(field)
 
 }
 
 function updateBoard(x,y) 
 {
-  filterField(); 
-  let tile = playfield[x][y].getTile();
-  let col = tile.getColor();
-  let newTiles = [];
-  //über Tile
-  if(x != 0) 
-  {
-    setValiidTiles("up",x,y)
-  }
-  // links vom Tile
-  if(y != 0) 
-  {
-    setValiidTiles("left",x,y)
-  }
-  //rechts vom Tile 
-  if(y < (width / tileSize) - 1) 
-  {
-    setValiidTiles("right",x,y)
-  }
-  // unterm TIle
-    if(x < (height / tileSize) -1 ) 
-  {
-    setValiidTiles("down",x,y)
-  }
-
+  setValiidTiles("up",x,y);
+  setValiidTiles("left",x,y);
+  setValiidTiles("right",x,y);
+  setValiidTiles("down",x,y);
   sortFiled();
 
 }
@@ -118,16 +118,7 @@ function sortFiled()
   });
 }
 
-function filterField()
-{
-  for ( let i = 0; i < field.length ; i++) 
-  {
-    if(field[i].getColl() == true) 
-    {
-      field.splice(i,1);
-    }
-  }
-}
+
 
 function rotate_and_draw_image(img, img_x, img_y, img_width, img_height, img_angle){
   imageMode(CENTER);
@@ -147,45 +138,51 @@ function setValiidTiles(pos,x,y)
   let modY 
   switch(pos) {
     case "up":
-       main = 2
-       dir = 0
-       modX = -1
-       modY = 0
-       break;
-  
+      main = 2
+      dir = 0
+      modX = 0
+      modY = -1
+      break;
     case "down":
       main = 0
       dir = 2
-      modX = 1
-      modY = 0
+      modX = 0
+      modY = 1
       break;
     case "left":
       main = 1
       dir = 3
-      modX = 0
-      modY = -1
+      modX = -1
+      modY = 0
       break;
-      case "right":
+    case "right":
       main = 3
       dir = 1
-      modX = 0
-      modY = 1
+      modX = 1
+      modY = 0
+      break;
     }
+
+  if(x + modX < 0 || x + modX > playfield.length -1|| y + modY < 0 || y + modY > playfield.length -1) 
+  {
+    return; 
+  }
   let newTiles = [];
-  const col = playfield[x][y].getTile().getColor()
+  const color = playfield[x][y].getTile().getColor();
   for(let i = 0; i < tiles.length; i ++) 
     {
-      if(tiles[i].getColor()[main] == col[dir]) 
+      if(tiles[i].getColor()[main] === color[dir]) 
       {
         newTiles.push(tiles[i]);
       }
     }
-
     if(playfield[x + modX][y + modY].getColl() == false) {playfield[x + modX][y+ modY].setTiles(newTiles);}
     if(newTiles.length == 1) 
     {
       playfield[x + modX][y + modY].collapse();
     }
+}
 
-
+function mousePressed() {
+  noLoop();
 }

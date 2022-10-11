@@ -45,14 +45,6 @@ class cell {
                 return tile; 
             } 
     }
-    setDir(dir)
-    {
-        this.dir = dir;
-    }
-    getDir()
-    {
-        return this.dir;
-    }
 
  }
 
