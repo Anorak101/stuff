@@ -5,6 +5,33 @@ let tiles =[];
 let field = [];
 let done = false; 
 
+const posTable = {
+  up: {
+    main: 2,
+    dir: 0,
+    modX: 0,
+    modY: -1
+  },
+  down: {
+    main: 0,
+    dir: 2,
+    modX: 0,
+    modY: 1
+  },
+  left: {
+    main: 1,
+    dir: 3,
+    modX: -1,
+    modY: 0
+  },
+  right: {
+    main: 3,
+    dir: 1,
+    modX: 1,
+    modY: 0
+  }
+}
+
 function preload() 
 {
     for (let i = 0; i < 13; i++) {
@@ -21,21 +48,21 @@ function setup() {
     { 
         playfield[i] = new Array(height / tileSize) ; 
     } 
-  tiles[0] = new tile(imiges[0],["aaa", "aaa" , "aaa" , "aaa"],0);
-  tiles[1] = new tile(imiges[1],["bbb", "bbb" , "bbb" , "bbb"],0);
-  /*
-  tiles[2] = new tile(imiges[2],["bbb", "bcb" , "bbb" , "bbb"],0);
-  tiles[3] = new tile(imiges[3],["bbb", "bdb" , "bbb" , "bdb"],0)
-  tiles[4] = new tile(imiges[4],["abb", "bcb" , "abb" , "aaa"],0)
-  tiles[5] = new tile(imiges[5],["abb", "bbb" , "bbb" , "bba"],0)
-  tiles[6] = new tile(imiges[6],["bbb", "bcb" , "bbb" , "bcb"],0)
-  tiles[7] = new tile(imiges[7],["bdb", "bcb" , "bdb" , "bcb"],0)
-  tiles[8] = new tile(imiges[8],["bdb", "bbb" , "bcb" , "bbb"],0)
-  tiles[9] = new tile(imiges[9],["bcb", "bcb" , "bbb" , "bcb"],0)
-  tiles[10] = new tile(imiges[10],["bcb", "bcb" , "bcb" , "bcb"],0)
-  tiles[11] = new tile(imiges[11],["bcb", "bcb" , "bbb" , "bbb"],0)
-  tiles[12] = new tile(imiges[12],["bbb", "bcb" , "bbb" , "bcb"],0)
-*/
+  tiles[0] = new tile(imiges[0],["sss", "sss" , "sss" , "sss"],0);
+  tiles[1] = new tile(imiges[1],["ggg", "ggg" , "ggg" , "ggg"],0);
+  tiles[2] = new tile(imiges[2],["ggg", "ghg" , "ggg" , "ggg"],0);
+  tiles[3] = new tile(imiges[3],["ggg", "grg" , "ggg" , "grg"],0);
+  tiles[4] = new tile(imiges[4],["sgg", "ghg" , "sgg" , "sss"],0);
+  tiles[5] = new tile(imiges[5],["sgg", "ggg" , "ggg" , "ggs"],0);
+  tiles[6] = new tile(imiges[6],["ggg", "ghg" , "ggg" , "ghg"],0);
+  tiles[7] = new tile(imiges[7],["grg", "ghg" , "grg" , "ghg"],0);
+  tiles[8] = new tile(imiges[8],["grg", "ggg" , "ghg" , "grg"],0);
+  tiles[9] = new tile(imiges[9],["ghg", "ghg" , "ggg" , "ghg"],0);
+  tiles[10] = new tile(imiges[10],["ghg", "ghg" , "ghg" , "ghg"],0);
+  tiles[11] = new tile(imiges[11],["ghg", "ghg" , "ggg" , "ggg"],0);
+  tiles[12] = new tile(imiges[12],["ggg", "ghg" , "ggg" , "ghg"],0);
+
+  //console.log(rotateTile(tiles[5].getColor(),2));
 
 
   background(12);
@@ -44,7 +71,7 @@ function setup() {
   {
     for(let j = 0 ; j < playfield[i].length; j++) 
     {
-      playfield[i][j] = new cell(i , j, tiles.slice(),false,0); 
+      playfield[i][j] = new cell(i , j, [...tiles],false,0); 
       square(tileSize * i, tileSize * j, tileSize);
       //image(imiges[Math.floor(Math.random() * 12)], i * tileSize, j * tileSize, tileSize, tileSize); 
       field.push(playfield[i][j]);
@@ -59,7 +86,8 @@ function setup() {
 
 function draw() {
   if(field.length == 0) {noLoop();} 
-  else {  
+  else 
+  {  
     if(field[0].getColl() == true) 
     {
       let temp = []
@@ -83,20 +111,18 @@ function draw() {
     }
 
 
-}
-  for (let i = 0; i < width / tileSize; i ++) 
-    {
-      for (let j = 0; j < height / tileSize; j++) 
+  }
+    for (let i = 0; i < width / tileSize; i ++) 
       {
-        if(playfield[i][j].getColl() == true) 
+        for (let j = 0; j < height / tileSize; j++) 
         {
-          //rotate(playfield[i][j].getTile().getRotation());
-          rotate_and_draw_image(playfield[i][j].getImage(), i * tileSize, j * tileSize, tileSize, tileSize,playfield[i][j].getTile().getRotation())
+          if(playfield[i][j].getColl() == true) 
+          {
+            //rotate(playfield[i][j].getTile().getRotation());
+            rotate_and_draw_image(playfield[i][j].getImage(), i * tileSize, j * tileSize, tileSize, tileSize,playfield[i][j].getTile().getRotation())
+          }
         }
       }
-    }
-    console.log(field)
-
 }
 
 function updateBoard(x,y) 
@@ -123,7 +149,7 @@ function sortFiled()
 function rotate_and_draw_image(img, img_x, img_y, img_width, img_height, img_angle){
   imageMode(CENTER);
   translate(img_x+img_width/2, img_y+img_width/2);
-  rotate(img_angle);
+  rotate((PI/2) * img_angle);
   image(img, 0, 0, img_width, img_height);
   rotate(-img_angle);
   translate(-(img_x+img_width/2), -(img_y+img_width/2));
@@ -132,51 +158,30 @@ function rotate_and_draw_image(img, img_x, img_y, img_width, img_height, img_ang
 
 function setValiidTiles(pos,x,y)
 {
-  let main
-  let dir
-  let modX
-  let modY 
-  switch(pos) {
-    case "up":
-      main = 2
-      dir = 0
-      modX = 0
-      modY = -1
-      break;
-    case "down":
-      main = 0
-      dir = 2
-      modX = 0
-      modY = 1
-      break;
-    case "left":
-      main = 1
-      dir = 3
-      modX = -1
-      modY = 0
-      break;
-    case "right":
-      main = 3
-      dir = 1
-      modX = 1
-      modY = 0
-      break;
-    }
+  const { main, dir, modX, modY } = posTable[pos]
 
   if(x + modX < 0 || x + modX > playfield.length -1|| y + modY < 0 || y + modY > playfield.length -1) 
   {
     return; 
   }
   let newTiles = [];
-  const color = playfield[x][y].getTile().getColor();
-  for(let i = 0; i < tiles.length; i ++) 
+  let color; 
+  try
+  {
+    color = playfield[x][y].getTile().getColor();
+  } catch(e) {debugger};
+  const possibleTiles = playfield[x][y].possibleTiles;
+  for(let i = 0; i < possibleTiles.length; i ++) 
     {
-      if(tiles[i].getColor()[main] === color[dir]) 
+      if(possibleTiles[i].getColor()[main] === color[dir]) 
       {
-        newTiles.push(tiles[i]);
+        newTiles.push(possibleTiles[i]);
       }
     }
-    if(playfield[x + modX][y + modY].getColl() == false) {playfield[x + modX][y+ modY].setTiles(newTiles);}
+    if(playfield[x + modX][y + modY].getColl() == false) 
+    {
+      playfield[x + modX][y+ modY].setTiles(newTiles);
+    }
     if(newTiles.length == 1) 
     {
       playfield[x + modX][y + modY].collapse();
@@ -185,4 +190,31 @@ function setValiidTiles(pos,x,y)
 
 function mousePressed() {
   noLoop();
+}
+
+function findTile(main, pos) 
+{
+
+}
+
+function rotateTile(tile, rotation) 
+{
+  let temp = [] ; 
+  let colors = tile; 
+  if(rotation >= 2 ) 
+  {
+    for(let i = 0; i < colors.length; i++) 
+    {
+      const chars = colors[i].split("");
+      chars.reverse();
+      colors[i] = chars.join(""); 
+      
+    }
+  }
+  let start =  4 - rotation
+  temp = colors.splice(start) ; 
+  
+  colors = temp.concat(colors)
+  return colors; 
+
 }

@@ -1,17 +1,17 @@
 
 
-let w = 600; 
-let h = 600; 
-let square = 20; 
+let w = 1700; 
+let h = 880; 
+let square = 10; 
 let field = [];  
-let running = true ; 
+let running = false ; 
 function setup() {
   // put setup code here
   createCanvas(w, h);
-  button = createButton('Stop'); 
+  button = createButton("start"); 
   button.mousePressed(buttonKlick); 
-  frameRate(5);
-  // noLoop();
+  frameRate(30);
+
     
 
   stroke(100);
@@ -25,13 +25,6 @@ function setup() {
     }
    field[x]= temp ; 
  }
-
- field[2][4] = true;
- field[3][4] = true;
- field[4][4] = true;
- field[4][3] = true;
- field[3][2] = true; 
-
 }
 
 function draw() {
@@ -52,7 +45,8 @@ function draw() {
 }
 
 function getNeighborCount(x ,y )
-{let count = 0; 
+{
+  let count = 0; 
   for( let i = -1; i < 2 ; i ++ )
   {
     for( let j = -1 ;j < 2; j ++) {
@@ -64,33 +58,22 @@ function getNeighborCount(x ,y )
 
   return count; 
 }  
+
+
 function updateField()
 {
   let temp = []; 
-  temp = field; 
+
   for(let x = 0; x < w / square; x ++ ) {
-     
+     temp[x] = [];
     for ( let y = 0 ; y < h / square;y ++){
       let count  = getNeighborCount(x,y); 
+      let status = field[x][y]
       switch(count) {
-        case 0 : temp[x][y]= false ; 
-        break; 
-        case 1 : temp[x][y]= false ; 
-        break; 
-        case 2 : temp[x][y]= field[x][y]; 
+        case 2 : temp[x][y]= status; 
         break; 
         case 3 : temp[x][y]= true; 
         break; 
-        case 4 : temp[x][y]=false;
-        break;
-        case 5 : temp[x][y]=false;
-        break;
-        case 6 : temp[x][y]=false;
-        break;
-        case 7 : temp[x][y]=false;
-        break;
-        case 8 : temp[x][y]=false;
-        break;
         default : temp[x][y]=false;
       }
     
@@ -106,11 +89,18 @@ function mouseClicked()
 
   let x = Math.floor(mouseX / square); 
   let y = Math.floor(mouseY / square); 
-  console.log(x,y); 
- // if (x < field.length || y < field.length){   }
-  field[x][y] =  true;
-
-  //console.log(field); 
+  if (x < field.length && y < field.length){  field[x][y] =  !field[x][y]; }
+  
 }
 
-function buttonKlick(){if(running){ running = false; } else { running = true;  }}
+function buttonKlick(){if(running)
+  {
+  running = false; 
+  frameRate(60); 
+  button.html("Start");
+} else 
+{
+ running = true; 
+ frameRate(30);  
+ button.html("Stop");
+}}
