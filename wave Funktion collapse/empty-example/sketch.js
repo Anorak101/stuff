@@ -62,7 +62,14 @@ function setup() {
   tiles[11] = new tile(imiges[11],["ghg", "ghg" , "ggg" , "ggg"],0);
   tiles[12] = new tile(imiges[12],["ggg", "ghg" , "ggg" , "ghg"],0);
 
-  //console.log(rotateTile(tiles[5].getColor(),2));
+  for( let i = 0; i < 13 ; i ++) 
+  {
+    for(let j = 0; j < 4; j++) 
+    {
+        newTile = new tile(tiles[i].getImg(),rotateTile(tiles[i].getColor(),j),j);
+        tiles.push(newTile);
+    }
+  }
 
 
   background(12);
@@ -192,8 +199,26 @@ function mousePressed() {
   noLoop();
 }
 
-function findTile(main, pos) 
+function findTile(main,index,x,y)  
 {
+  const temp = [];
+  newCell = Object.create(playfield[x][y]) ; 
+  possibleTiles = newCell.possibleTiles; 
+  for(let i = 0; i < possibleTiles.length; i ++) 
+  {
+    tile = possibleTiles[i] ; 
+    for( let j = 0; j < tile.getColor().length; j++) 
+    {
+      if(tile.getColor()[index] === main) 
+      {
+        tile.setColor() = rotateTile(tile.getColor(), i);
+        tile.setRotation(j);
+        temp.push(tile[i]);
+      }
+    }
+  }
+
+  return temp; 
 
 }
 

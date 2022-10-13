@@ -1,4 +1,4 @@
-class cell {
+  class cell {
 
     constructor(posX,posY,possibleTiles,coll, dir)
     {

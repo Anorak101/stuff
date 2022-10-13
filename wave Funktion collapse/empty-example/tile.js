@@ -15,5 +15,13 @@ getRotation()
 {
 	return this.rotation;
 }
+setColor(colors) 
+{
+	this.colors = colors;
+}
+setRotation(rotation)
+{
+	this.rotation = rotation;
+}
 }
 
