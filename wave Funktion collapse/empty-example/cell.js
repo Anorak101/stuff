@@ -13,7 +13,6 @@
         if(this.possibleTiles.length === 0){
             throw new Error("possibleTiles leer");
         }
-
         const random = Math.floor(Math.random() * (this.possibleTiles.length ));
         let temp = [];
         temp[0] = this.possibleTiles[random];
@@ -23,9 +22,7 @@
     setTiles(tiles){
            this.possibleTiles = tiles; 
         }
-    getPossibleTiles(){
 
-    }
     getImage() {
             if (this.coll == true) 
             {
