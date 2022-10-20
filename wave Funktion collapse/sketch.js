@@ -3,38 +3,56 @@ let playfield = [];
 let imiges = [];
 let tiles =[];
 let field = [];
-let stepsPF = [];
-let stepsF = [];
 const posTable = {
   up: {
     main: 0,
-    dir: 2,
     modX: 0,
     modY: -1
   },
   down: {
     main: 2,
-    dir: 0,
     modX: 0,
     modY: 1
   },
   left: {
     main: 3,
-    dir: 1,
     modX: -1,
     modY: 0
   },
   right: {
     main: 1,
-    dir: 3,
     modX: 1,
     modY: 0
   }
 }
+const disAllowedConnections = [
+   [4,3,1],
+   [4,3,1],
+   [5,0,2],
+   [5,3,1],
+   [13,3,1],
+   [13,3,1],
+   [18,0,1],
+   [18,0,1],
+   [19,1,1],
+   [19,1,1],
+   [20,2,1],
+   [20,2,1],
+   [21,0,1],
+   [21,1,0],
+   [22,1,1],
+   [22,2,1],
+   [23,2,1],
+   [23,3,1],
+   [36,0,3],
+   [36,0,3],
+   [37,1,3],
+   [38,2,3],
+]
 
 function preload() 
 {
-  for (let i = 0; i < 13; i++) 
+  for (let i = 0; i < 14; i++) 
   {
   imiges[i] = loadImage(`tiles/${i}.png`);
   }
@@ -43,39 +61,48 @@ function preload()
 function setup() {
   //frameRate(30);
   createCanvas(600, 600);
-  tileSize = 20 ; 
+  tileSize = 30 ; 
   playfield = new Array(width / tileSize) ;
   for (let i = 0; i < playfield.length; i ++) 
     { 
         playfield[i] = new Array(height / tileSize) ; 
     } 
-  tiles[0] = new tile(imiges[0],["sss", "sss" , "sss" , "sss"],0);
-  tiles[1] = new tile(imiges[1],["ggg", "ggg" , "ggg" , "ggg"],0);
-  tiles[2] = new tile(imiges[2],["ggg", "ghg" , "ggg" , "ggg"],0);
-  tiles[3] = new tile(imiges[3],["ggg", "grg" , "ggg" , "grg"],0);
-  tiles[4] = new tile(imiges[4],["sgg", "ghg" , "ggs" , "sss"],0);
-  tiles[5] = new tile(imiges[5],["sgg", "ggg" , "ggg" , "ggs"],0);
-  tiles[6] = new tile(imiges[6],["ggg", "ghg" , "ggg" , "ghg"],0);
-  tiles[7] = new tile(imiges[7],["grg", "ghg" , "grg" , "ghg"],0);
-  tiles[8] = new tile(imiges[8],["grg", "ggg" , "ghg" , "ggg"],0);
-  tiles[9] = new tile(imiges[9],["ghg", "ghg" , "ggg" , "ghg"],0);
-  tiles[10] = new tile(imiges[10],["ghg", "ghg" , "ghg" , "ghg"],0);
-  tiles[11] = new tile(imiges[11],["ghg", "ghg" , "ggg" , "ggg"],0);
-  tiles[12] = new tile(imiges[12],["ggg", "ghg" , "ggg" , "ghg"],0);
+    tiles[0] = new tile(imiges[0],["sss", "sss" , "sss" , "sss"],0,0,[0,4,13]);
+    tiles[1] = new tile(imiges[1],["ggg", "ggg" , "ggg" , "ggg"],0,1,[1,2,3,5,6,8,9,11,12,13]);
+    tiles[2] = new tile(imiges[2],["ggg", "ghg" , "ggg" , "ggg"],0,2,[1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    tiles[3] = new tile(imiges[3],["ggg", "grg" , "ggg" , "grg"],0,3,[1,2,3,5,6,7,8,9,10,11,12,13]);
+    tiles[4] = new tile(imiges[4],["sgg", "ghg" , "ggs" , "sss"],0,4,[0,2,4,5,6,7,8,9,10,11,12,13]);
+    tiles[5] = new tile(imiges[5],["sgg", "ggg" , "ggg" , "ggs"],0,5,[1,2,3,4,5,6,7,8,9,10,12,13]);
+    tiles[6] = new tile(imiges[6],["ggg", "ghg" , "ggg" , "ghg"],0,6,[1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    tiles[7] = new tile(imiges[7],["grg", "ghg" , "grg" , "ghg"],0,7,[2,3,4,6,7,8,9,10,11,12]);
+    tiles[8] = new tile(imiges[8],["grg", "ggg" , "ghg" , "ggg"],0,8,[1,2,3,4,6,7,8,9,10,11,12,13]);
+    tiles[9] = new tile(imiges[9],["ghg", "ghg" , "ggg" , "ghg"],0,9,[1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    tiles[10] = new tile(imiges[10],["ghg", "ghg" , "ghg" , "ghg"],0,10,[2,4,6,7,8,9,10,11,12]);
+    tiles[11] = new tile(imiges[11],["ghg", "ghg" , "ggg" , "ggg"],0,11,[1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    tiles[12] = new tile(imiges[12],["ggg", "ghg" , "ggg" , "ghg"],0,12,[1,2,3,4,5,6,7,8,9,10,11,12,13]);
+    tiles[13] = new tile(imiges[13],["sgg", "ggg" , "ggs" , "sss"],0,13,[0,1,2,3,4,5,6,8,9,11,12,13]);
   let copyTiles = [...tiles]
   for( let i = 2; i < copyTiles.length ; i ++) 
   {
     for(let j = 1; j < 4; j++) 
     {
-        colors = [...copyTiles[i].colors]
-        newTile = new tile(copyTiles[i].getImg(),rotateTile(colors,j),j);
+        colors = [...copyTiles[i].color]
+        newTile = new tile(copyTiles[i].getImg(),rotateTile(colors,j),j,copyTiles[i].standartIndex,copyTiles[i].validTiles);
         tiles.push(newTile);
     }
   }
-  console.log(tiles.length);
   tiles = removeDuplicates(tiles); 
-  console.log(tiles.length);
-
+  
+  for(let i = 0; i < tiles.length; i++) 
+  {
+    tiles[i].generateAdjecency(tiles);
+  }
+  
+  console.log(tiles)
+  for(let i = 0; i < disAllowedConnections.length; i++) 
+  {
+    tiles[disAllowedConnections[i][0]].removeTileFromAdjacency(disAllowedConnections[i][1],disAllowedConnections[i][2])
+  }
   background(12);
   stroke(0);
   for(let i = 0; i < playfield.length; i++) 
@@ -132,11 +159,6 @@ function draw() {
         }
       }
     }
-
-  stepsPF.push([...playfield]);
-  stepsF.push([...field]);
-
-
 }
 
 function updateBoard(x,y) 
@@ -172,7 +194,7 @@ function rotate_and_draw_image(img, img_x, img_y, img_width, img_height, img_ang
 
 function setValiidTiles(pos,x,y)
 {
-  const { main, dir, modX, modY } = posTable[pos]
+  const { main, modX, modY } = posTable[pos]
 
   if(x + modX < 0 || x + modX > playfield.length -1|| y + modY < 0 || y + modY > playfield.length -1) 
   {
@@ -182,7 +204,7 @@ function setValiidTiles(pos,x,y)
   {
     return;
   }
-  let newTiles = calucaltePossibleTiles(playfield[x][y],main,x + modX, y + modY, dir);
+  let newTiles = calucaltePossibleTiles(playfield[x][y],main,x + modX, y + modY);
   playfield[x + modX][y+ modY].setTiles(newTiles);
   if(newTiles.length == 1) 
   {
@@ -190,20 +212,16 @@ function setValiidTiles(pos,x,y)
   }
 }
 
-function mousePressed() {
-  noLoop();
-}
-
-function calucaltePossibleTiles(main,index,x,y,dir)  
+function calucaltePossibleTiles(mainCell,dirIndex,x,y)  
 {
   const temp = [];
-  const color = reverseString(main.getTile().getColor()[index]); 
-  const possibleTiles = playfield[x][y].possibleTiles; 
-  for(let i = 0; i< possibleTiles.length; i++)
+  validTiles= mainCell.getTile().adjacency[dirIndex];
+  possibleTiles = playfield[x][y].possibleTiles;
+  for(let i = 0; i < possibleTiles.length; i++) 
   {
-    if(color === possibleTiles[i].getColor()[dir]) 
+    if(validTiles.includes(possibleTiles[i]))
     {
-      temp.push(possibleTiles[i]); 
+      temp.push(possibleTiles[i])
     }
   }
   return temp; 
@@ -219,13 +237,6 @@ function rotateTile(tile, rotation)
   colors = temp.concat(colors)
   return colors; 
 
-}
-function reverseString(text) 
-{
-  const chars = text.split("");
-  chars.reverse();
-  const temp = chars.join("");
-  return temp; 
 }
 
 function removeDuplicates(arr)
@@ -246,7 +257,7 @@ function containsTile(arr, tile)
   for( let i = 0; i< arr.length; i++) 
   {
     tile1 = arr[i]
-    if(tile1.colors.toString() === tile.colors.toString() && tile1.pic === tile.pic) 
+    if(tile1.color.toString() === tile.color.toString() && tile1.pic === tile.pic) 
     {
       return true;
     }

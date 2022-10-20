@@ -11,6 +11,7 @@
     collapse(){
         this.coll = true; 
         if(this.possibleTiles.length === 0){
+            console.log(this.posX,this.posY)
             throw new Error("possibleTiles leer");
         }
         const random = Math.floor(Math.random() * (this.possibleTiles.length ));
